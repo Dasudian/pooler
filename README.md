@@ -19,7 +19,7 @@ Add some config like this in your `app.config`
 ```erlang
 pooler:start().
 
-Worker = pooler:take_member(test).
+Worker = pooler:take_member(Pool).
 
 do_something(Worker, X).
 
