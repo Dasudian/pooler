@@ -1,0 +1,26 @@
+{application, pooler,
+ [{description, "Erlang process pool"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, { pooler_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    poolboy
+   ]},
+  {env,[
+        {pools, [
+                 [{name, test},
+                  {group, test},
+                  {max_count, 1},
+                  {init_count, 1},
+                  {start_mfa,
+                   {pooler_test, start, []}}]
+                ]}
+       ]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.
