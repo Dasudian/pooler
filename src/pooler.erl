@@ -3,8 +3,12 @@
          start/0,
          stop/0,
          take_member/1,
-         return_member/3
+         return_member/3,
+         transaction/2,
+         transaction/3
         ]).
+
+-define(TIMEOUT, 5000).
 
 start() ->
     {ok, _} = application:ensure_all_started(pooler),
@@ -20,3 +24,9 @@ return_member(Pool, Member, ok) ->
     poolboy:checkin(Pool, Member);
 return_member(Pool, Member, fail) ->
     poolboy:checkin(Pool, Member).
+
+transaction(Pool, Fun) ->
+    poolboy:transaction(Pool, Fun, ?TIMEOUT).
+
+transaction(Pool, Fun, Timeout) ->
+    poolboy:transaction(Pool, Fun, Timeout).
