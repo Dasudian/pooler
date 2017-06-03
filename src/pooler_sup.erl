@@ -29,7 +29,7 @@ start_link() ->
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
     {ok, App} = application:get_application(),
-    {ok, Pools} = application:get_env(App, pools),
+    {ok, Pools} = application:get_env(App, pools, {ok, []}),
     %% PoolSpecs = lists:map(fun({Name, SizeArgs, WorkerArgs}) ->
     %%                               PoolArgs = [{name, {local, Name}},
     %%                                           {worker_module, riakc_worker}] ++ SizeArgs,
