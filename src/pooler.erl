@@ -3,6 +3,7 @@
          start/0,
          stop/0,
          take_member/1,
+         take_member/2,
          return_member/3,
          transaction/2,
          transaction/3
@@ -19,6 +20,9 @@ stop() ->
 
 take_member(Pool) ->
     poolboy:checkout(Pool).
+
+take_member(Pool, Timeout) ->
+    poolboy:checkout(Pool, true, Timeout).
 
 return_member(Pool, Member, ok) ->
     poolboy:checkin(Pool, Member);
