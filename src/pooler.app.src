@@ -7,7 +7,6 @@
             [kernel,
                 stdlib,
                 poolboy,
-                riakc,
                 lager
             ]},
         {env, []},

@@ -26,14 +26,12 @@ get_conn(Pid) ->
 
 init([Args]) ->
     process_flag(trap_exit, true),
-    lager:info("init  : ~p~n", [Args]),
     {M, F, A} = proplists:get_value(start_mfa, Args),
     case try_connect(M, F, A) of
         {ok, Pid} ->
             true = link(Pid),
             {ok, #state{start_mfa = {M, F, A}, conn = Pid, status = connected}};
-        {error, R} ->
-            lager:info("connect error  : ~p ~n", [R]),
+        {error, _R} ->
             {ok, TRef} = timer:send_interval(?ReconnectTimer, timer),
             {ok, #state{start_mfa = {M, F, A}, status = disconnect, reconnect = TRef}}
     end.
@@ -56,13 +54,11 @@ handle_cast(_Msg, State) ->
 
 
 handle_info({'EXIT', Pid, _Reason}, #state{reconnect = undefined} = State) ->
-    lager:info("pid ~p is down. Reason : ~p state:~p ~n ", [Pid, _Reason, State]),
     unlink(Pid),
     {ok, TRef} = timer:send_interval(?ReconnectTimer, timer),
     {noreply, State#state{status = disconnect, reconnect = TRef}};
 
 handle_info({'EXIT', Pid, _Reason}, State) ->
-    lager:info("pid ~p is down. Reason : ~p ~n ", [Pid, _Reason]),
     {noreply, State};
 
 handle_info(timer, #state{status = connected} = State) ->
@@ -70,23 +66,19 @@ handle_info(timer, #state{status = connected} = State) ->
 
 
 handle_info(timer, #state{start_mfa = {M, F, A}, status = disconnect, reconnect = Ref} = State) ->
-    lager:info("try to connect : ~p ~n", [State]),
     case try_connect(M, F, A) of
         {ok, Pid} ->
             true = link(Pid),
             timer:cancel(Ref),
             {noreply, #state{start_mfa = {M, F, A}, conn = Pid, status = connected}};
         {error, R} ->
-            lager:info("reconnect error : ~p ~n", [R]),
             {noreply, State}
     end;
 
 handle_info(Info, State) ->
-    lager:info("get unkown info : ~p", [Info]),
     {noreply, State}.
 
 terminate(_Reason, _State) ->
-    lager:info("terminate : ~p ~n", [{_Reason}]),
     ok.
 
 code_change(_OldVsn, State, _Extra) ->
@@ -96,6 +88,5 @@ try_connect(M, F, A) ->
     try erlang:apply(M, F, A)
     catch
         _:Reason ->
-            lager:info("connect error Reason : ~p ~n", [Reason]),
             {error, Reason}
     end.
