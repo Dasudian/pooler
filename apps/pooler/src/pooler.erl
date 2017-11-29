@@ -1,13 +1,13 @@
 -module(pooler).
 -export([
-         start/0,
-         stop/0,
-         take_member/1,
-         take_member/2,
-         return_member/3,
-         transaction/2,
-         transaction/3
-        ]).
+    start/0,
+    stop/0,
+    take_member/1,
+    take_member/2,
+    return_member/3,
+    transaction/2,
+    transaction/3
+]).
 
 -define(TIMEOUT, 5000).
 
@@ -18,8 +18,12 @@ start() ->
 stop() ->
     ok = application:stop(pooler).
 
+-spec take_member(Pool :: atom()) -> pid().
 take_member(Pool) ->
-    poolboy:checkout(Pool).
+    Pid = poolboy:checkout(Pool),
+    {ok, MemPid} = pooler_worker:get_conn(Pid),
+    CB = fun(Res) -> ?MODULE:return_member(Pool, Pid, Res) end,
+    {CB, MemPid}.
 
 take_member(Pool, Timeout) ->
     poolboy:checkout(Pool, true, Timeout).
@@ -31,6 +35,5 @@ return_member(Pool, Member, fail) ->
 
 transaction(Pool, Fun) ->
     poolboy:transaction(Pool, Fun, ?TIMEOUT).
-
 transaction(Pool, Fun, Timeout) ->
     poolboy:transaction(Pool, Fun, Timeout).

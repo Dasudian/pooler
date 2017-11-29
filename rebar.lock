@@ -1,4 +1,26 @@
-[{<<"poolboy">>,
+{"1.1.0",
+[{<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
+ {<<"hamcrest">>,
+  {git,"https://github.com/basho/hamcrest-erlang.git",
+       {ref,"ad3dbab419762fc2d5821abb88b989da006b85c6"}},
+  2},
+ {<<"lager">>,
+  {git,"git://github.com/erlang-lager/lager.git",
+       {ref,"9361a3288d0821f687b19f6e855c1b3de6a7b4f8"}},
+  0},
+ {<<"poolboy">>,
   {git,"git://github.com/devinus/poolboy.git",
        {ref,"3bb48a893ff5598f7c73731ac17545206d259fac"}},
-  0}].
+  0},
+ {<<"riak_pb">>,
+  {git,"https://github.com/basho/riak_pb",
+       {ref,"08771aba2ce4935b715d32d1b92555efdc3da994"}},
+  1},
+ {<<"riakc">>,
+  {git,"https://github.com/basho/riak-erlang-client.git",
+       {ref,"f3a0592cf2200fd37b46b5188cabd4cf7058d776"}},
+  0}]}.
+[
+{pkg_hash,[
+ {<<"goldrush">>, <<"F06E5D5F1277DA5C413E84D5A2924174182FB108DABB39D5EC548B27424CD106">>}]}
+].
