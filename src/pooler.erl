@@ -18,12 +18,25 @@ start() ->
 stop() ->
     ok = application:stop(pooler).
 
--spec take_member(Pool :: atom()) -> pid().
+-spec take_member(Pool :: atom()) -> {ok, {CallBack :: fun((Res :: atom()) -> any()), pid()}} | {error, disconnect}.
 take_member(Pool) ->
     Pid = poolboy:checkout(Pool),
-    {ok, MemPid} = pooler_worker:get_conn(Pid),
-    CB = fun(Res) -> ?MODULE:return_member(Pool, Pid, Res) end,
-    {CB, MemPid}.
+    case pooler_worker:get_conn(Pid) of
+        {ok, MemPid} ->
+            CallBack = fun(Res) ->
+                poolboy:checkin(Pool, Pid),
+                case Res of
+                    ok -> ok;
+                    fail -> pooler_worker:fail_conn(Pid)
+                end end,
+            {ok, {CallBack, MemPid}};
+        {error, _R} -> take_member_error(Pool, Pid)
+    end.
+
+take_member_error(Pool, Pid) ->
+    poolboy:checkin(Pool, Pid),
+    {error, disconnect}.
+
 
 take_member(Pool, Timeout) ->
     poolboy:checkout(Pool, true, Timeout).
