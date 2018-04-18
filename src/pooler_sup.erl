@@ -47,7 +47,8 @@ init([]) ->
                                   WorkerArgs = [{start_mfa, MFA}],
                                   poolboy:child_spec(Name, PoolArgs, WorkerArgs)
                           end, Pools),
-    {ok, { {one_for_all, 10, 10}, PoolSpecs} }.
+    io:format("PoolSpecs : ~p", [PoolSpecs]),
+    {ok, { {one_for_one, 0, 1}, PoolSpecs} }.
 
 %%====================================================================
 %% Internal functions

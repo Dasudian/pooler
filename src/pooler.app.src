@@ -1,17 +1,18 @@
 {application, pooler,
- [{description, "Erlang process pool"},
-  {vsn, "0.1.0"},
-  {registered, []},
-  {mod, { pooler_app, []}},
-  {applications,
-   [kernel,
-    stdlib,
-    poolboy
-   ]},
-  {env,[]},
-  {modules, []},
+    [{description, "Erlang process pool"},
+        {vsn, "0.1.0"},
+        {registered, []},
+        {mod, {pooler_app, []}},
+        {applications,
+            [kernel,
+                stdlib,
+                poolboy,
+                lager
+            ]},
+        {env, []},
+        {modules, []},
 
-  {maintainers, []},
-  {licenses, []},
-  {links, []}
- ]}.
+        {maintainers, []},
+        {licenses, []},
+        {links, []}
+    ]}.
